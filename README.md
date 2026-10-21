@@ -13,7 +13,41 @@ API step and are proposed separately; this tool decides which rows actually need
 | 3 | HLR lookup (is the SIM live, ported carrier) | proposal, needs capped API key |
 | 4 | DND / TRAI NDNC scrub | proposal |
 
-## Quick start
+## Web app
+
+A local web page with two features:
+
+- **Check one number.** Type a number in any format and get a big **Validated** or **Not Validated**
+  answer with the reason, the cleaned-up number, line type, country, original carrier and region.
+- **Upload a file.** Drop a `.csv`, `.xlsx` or `.txt` list (up to 50,000 rows, 10 MB) and download a
+  **PDF**, **Word** or **CSV** report. The page also shows the totals: Validated, Not Validated, and how
+  many of those need a live carrier check.
+
+Start it:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\run_app.ps1
+# or: .\.venv\Scripts\python -m uvicorn app.main:app --port 8000
+```
+
+Then open http://127.0.0.1:8000. Uploaded files are processed in memory and never written to disk.
+
+**What "Validated" means.** Only `keep` rows are Validated: a correctly formed mobile number for its
+country, not a duplicate. Everything else is Not Validated. Rows the offline check cannot settle
+(US/Canada numbers, VoIP, wrong country column) are Not Validated and also tagged "needs a live
+carrier check", which is the layer 3 HLR job.
+
+| Endpoint | Purpose |
+|----------|---------|
+| `GET /` | the web page |
+| `POST /api/check` | JSON `{"number": "...", "country": "IN"}` returns status, reason and details |
+| `POST /api/bulk` | multipart `file`, `format` (`pdf`, `docx`, `csv`), `country`; returns the report file, totals in the `X-Validation-Summary` header |
+| `GET /api/sample` | the synthetic 200-row demo file |
+
+The report has the summary tiles, a "why numbers were not validated" breakdown, line types found,
+and a row-by-row table with a coloured status. About 6 seconds for 5,000 rows in PDF or Word.
+
+## Command line
 
 ```powershell
 py -3.12 -m venv .venv
@@ -51,6 +85,8 @@ Options: `--phone-col`, `--country-col` (both auto-detected from common header n
 | `extension` | any `x123` / `ext 45` suffix |
 | `verdict` | `keep`, `drop`, or `review` |
 | `reason` | why, plus bracketed notes (Excel repair, country mismatch, what the verdict was before de-dup) |
+| `status` | `Validated` or `Not Validated` |
+| `reason_text` | the reason in plain English |
 
 Any other input columns are copied through unchanged.
 

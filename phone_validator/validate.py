@@ -31,7 +31,39 @@ from phonenumbers import PhoneNumberType as T
 OUTPUT_COLUMNS = [
     "row", "input", "country_in", "normalized", "e164", "valid_format", "line_type",
     "country", "carrier", "region_hint", "extension", "verdict", "reason",
+    "status", "reason_text",
 ]
+
+# User-facing status. Only `keep` rows are "Validated"; `drop` and `review` are both
+# "Not Validated", and `review` rows additionally carry needs_review=True.
+STATUS_VALIDATED = "Validated"
+STATUS_NOT_VALIDATED = "Not Validated"
+
+REASON_TEXT = {
+    "valid_mobile": "Valid mobile number",
+    "landline": "Landline number, not a mobile",
+    "fixed_or_mobile_needs_hlr": "Could be a mobile or a landline; needs a live carrier check",
+    "voip": "Internet (VoIP) number; needs a live carrier check",
+    "unknown_type": "Line type could not be determined",
+    "mobile_with_extension": "Mobile written with an extension; check the source",
+    "wrong_country": "Number belongs to a different country than the country given",
+    "toll_free": "Toll-free number, not a personal mobile",
+    "premium_rate": "Premium-rate number",
+    "shared_cost": "Shared-cost number",
+    "personal_number": "Personal (forwarding) number",
+    "pager": "Pager number",
+    "uan": "Universal access number",
+    "voicemail": "Voicemail number",
+    "blank": "Empty cell",
+    "unparseable": "Not a phone number",
+    "excel_float_lost_digits": "Excel rounded this number; the original digits are lost",
+    "invalid_too_short": "Too few digits",
+    "invalid_too_long": "Too many digits",
+    "invalid_invalid_length": "Wrong number of digits",
+    "invalid_invalid_country_code": "Unknown country code",
+    "invalid_not_possible": "Not a possible number",
+    "invalid_unallocated_range": "Number range is not in use in that country",
+}
 
 PHONE_COLUMN_CANDIDATES = (
     "phone", "mobile", "phone_number", "mobile_number", "number", "contact",
@@ -104,13 +136,59 @@ class ValidationResult:
     def base_reason(self) -> str:
         return "duplicate" if self.is_duplicate else self.reason
 
+    @property
+    def status(self) -> str:
+        return STATUS_VALIDATED if self.verdict == "keep" else STATUS_NOT_VALIDATED
+
+    @property
+    def needs_review(self) -> bool:
+        return self.verdict == "review"
+
+    @property
+    def reason_text(self) -> str:
+        if self.is_duplicate:
+            return f"Duplicate of row {self.reason.rsplit('_', 1)[-1]}"
+        return REASON_TEXT.get(self.reason, self.reason.replace("_", " ").capitalize())
+
     def to_row(self) -> dict:
         d = asdict(self)
         d.pop("notes")
         d["valid_format"] = "yes" if self.valid_format else "no"
         if self.notes:
             d["reason"] = self.reason + " [" + "; ".join(self.notes) + "]"
+        d["status"] = self.status
+        d["reason_text"] = self.reason_text
         return d
+
+    def to_public(self) -> dict:
+        """JSON shape returned by the web API for one number."""
+        return {
+            "input": self.input,
+            "status": self.status,
+            "validated": self.verdict == "keep",
+            "needs_review": self.needs_review,
+            "verdict": self.verdict,
+            "reason": self.base_reason,
+            "reason_text": self.reason_text,
+            "e164": self.e164,
+            "international": _international(self.e164),
+            "line_type": self.line_type,
+            "country": self.country,
+            "country_given": self.country_in,
+            "carrier": self.carrier,
+            "region_hint": self.region_hint,
+            "extension": self.extension,
+            "notes": list(self.notes),
+        }
+
+
+def _international(e164: str) -> str:
+    if not e164:
+        return ""
+    try:
+        return pn.format_number(pn.parse(e164), pn.PhoneNumberFormat.INTERNATIONAL)
+    except pn.NumberParseException:
+        return e164
 
 
 # --------------------------------------------------------------------------------------
@@ -318,6 +396,8 @@ def summarize(results: list[ValidationResult]) -> "OrderedDict[str, int]":
     c: Counter = Counter()
     c["total_rows"] = len(results)
     for r in results:
+        c["validated"] += r.verdict == "keep"
+        c["not_validated"] += r.verdict != "keep"
         c["duplicates"] += r.is_duplicate
         c["blank_or_unparseable"] += r.reason in ("blank", "unparseable")
         c["excel_mangled"] += any(n.startswith("excel_") for n in r.notes)
@@ -331,7 +411,7 @@ def summarize(results: list[ValidationResult]) -> "OrderedDict[str, int]":
     c["settled_offline_keep_plus_drop"] = c["verdict_keep"] + c["verdict_drop"]
     c["needs_paid_lookup_review"] = c["verdict_review"]
     order = [
-        "total_rows", "valid_format", "invalid_format", "blank_or_unparseable", "excel_mangled",
+        "total_rows", "validated", "not_validated", "valid_format", "invalid_format", "blank_or_unparseable", "excel_mangled",
         "type_mobile", "type_landline", "type_fixed_or_mobile", "type_voip", "type_toll_free",
         "type_premium_rate", "wrong_country", "duplicates", "with_extension",
         "verdict_keep", "verdict_drop", "verdict_review",
@@ -358,6 +438,51 @@ def format_summary(summary: dict, results: Optional[list[ValidationResult]] = No
     return "\n".join(lines)
 
 
+@dataclass
+class TableResult:
+    """Everything produced by validating one table of rows."""
+    results: list[ValidationResult]
+    summary: "OrderedDict[str, int]"
+    rows: list[dict]
+    fieldnames: list[str]
+    phone_col: str
+    country_col: Optional[str]
+    default_region: str
+
+
+def validate_table(
+    rows: list[dict],
+    fieldnames: list[str],
+    phone_col: Optional[str] = None,
+    country_col: Optional[str] = None,
+    default_region: str = "IN",
+) -> TableResult:
+    """Pick the phone / country columns, validate every row, and summarise."""
+    pcol = _pick_column(fieldnames, phone_col, PHONE_COLUMN_CANDIDATES)
+    if pcol is None:
+        raise KeyError(f"could not find a phone column in {list(fieldnames)}; pass --phone-col")
+    ccol = _pick_column(fieldnames, country_col, COUNTRY_COLUMN_CANDIDATES)
+    if ccol == pcol:
+        ccol = None
+    results = validate_rows(rows, pcol, ccol, default_region)
+    return TableResult(results, summarize(results), rows, list(fieldnames), pcol, ccol, default_region)
+
+
+def write_csv(table: TableResult, fh, keep_input_columns: bool = True) -> None:
+    """Write the validated table as CSV to an open text handle."""
+    extra_cols = (
+        [c for c in table.fieldnames if c != table.phone_col and c not in OUTPUT_COLUMNS]
+        if keep_input_columns else []
+    )
+    w = csv.DictWriter(fh, fieldnames=OUTPUT_COLUMNS + extra_cols)
+    w.writeheader()
+    for r, src in zip(table.results, table.rows):
+        d = r.to_row()
+        for c in extra_cols:
+            d[c] = src.get(c, "")
+        w.writerow(d)
+
+
 def validate_file(
     in_path: str | Path,
     out_path: Optional[str | Path] = None,
@@ -373,27 +498,13 @@ def validate_file(
         fieldnames = reader.fieldnames or []
         rows = list(reader)
 
-    pcol = _pick_column(fieldnames, phone_col, PHONE_COLUMN_CANDIDATES)
-    if pcol is None:
-        raise KeyError(f"could not find a phone column in {fieldnames}; pass --phone-col")
-    ccol = _pick_column(fieldnames, country_col, COUNTRY_COLUMN_CANDIDATES)
-    if ccol == pcol:
-        ccol = None
-
-    results = validate_rows(rows, pcol, ccol, default_region)
-    summary = summarize(results)
+    table = validate_table(rows, fieldnames, phone_col, country_col, default_region)
+    results, summary, pcol, ccol = table.results, table.summary, table.phone_col, table.country_col
 
     out_path = Path(out_path) if out_path else in_path.with_name(in_path.stem + "_validated.csv")
     out_path.parent.mkdir(parents=True, exist_ok=True)
-    extra_cols = [c for c in fieldnames if c != pcol and c not in OUTPUT_COLUMNS] if keep_input_columns else []
     with out_path.open("w", newline="", encoding="utf-8") as fh:
-        w = csv.DictWriter(fh, fieldnames=OUTPUT_COLUMNS + extra_cols)
-        w.writeheader()
-        for r, src in zip(results, rows):
-            d = r.to_row()
-            for c in extra_cols:
-                d[c] = src.get(c, "")
-            w.writerow(d)
+        write_csv(table, fh, keep_input_columns)
     with out_path.with_suffix(".summary.json").open("w", encoding="utf-8") as fh:
         json.dump({"input": str(in_path), "phone_column": pcol, "country_column": ccol,
                    "default_region": default_region, "counts": summary}, fh, indent=2)

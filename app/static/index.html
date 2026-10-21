@@ -1,0 +1,376 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Champ Phone Validator</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='15' fill='%231F7A4D'/%3E%3Cpath d='M9 16.5l4.5 4.5L23 11.5' stroke='white' stroke-width='3.2' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<style>
+  :root {
+    --bg: #F4F6F8; --card: #FFFFFF; --ink: #1D2939; --muted: #667085; --line: #E4E7EC;
+    --brand: #2F5BEA; --brand-ink: #FFFFFF; --brand-soft: #EAF0FF;
+    --ok: #1F7A4D; --ok-bg: #E7F6EE; --bad: #B42318; --bad-bg: #FDECEA; --warn: #B54708; --warn-bg: #FEF4E6;
+    --radius: 14px; --shadow: 0 1px 2px rgba(16,24,40,.06), 0 4px 16px rgba(16,24,40,.06);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0F141A; --card: #171D25; --ink: #E6EAF0; --muted: #98A2B3; --line: #2A323D;
+      --brand: #6B8CFF; --brand-ink: #0F141A; --brand-soft: #1E2A4A;
+      --ok: #4CC38A; --ok-bg: #12301F; --bad: #F97066; --bad-bg: #3A1714; --warn: #FDB022; --warn-bg: #3A2A0E;
+      --shadow: none;
+    }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink);
+         font: 15px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  .wrap { max-width: 880px; margin: 0 auto; padding: 32px 16px 48px; }
+  header h1 { margin: 0 0 4px; font-size: 26px; letter-spacing: -.01em; }
+  header p { margin: 0; color: var(--muted); }
+
+  .tabs { display: flex; gap: 6px; margin: 24px 0 16px; background: var(--card); padding: 5px;
+          border-radius: 12px; border: 1px solid var(--line); width: fit-content; max-width: 100%; }
+  .tab { border: 0; background: transparent; color: var(--muted); padding: 9px 16px; border-radius: 9px;
+         font: inherit; font-weight: 600; cursor: pointer; }
+  .tab[aria-selected="true"] { background: var(--brand-soft); color: var(--brand); }
+
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius);
+          box-shadow: var(--shadow); padding: 22px; }
+  .card + .card { margin-top: 16px; }
+  .card h2 { margin: 0 0 4px; font-size: 18px; }
+  .card .hint { margin: 0 0 16px; color: var(--muted); font-size: 14px; }
+
+  label { display: block; font-size: 13px; font-weight: 600; color: var(--muted); margin-bottom: 6px; }
+  input[type=text], select { width: 100%; font: inherit; color: var(--ink); background: var(--bg);
+          border: 1px solid var(--line); border-radius: 10px; padding: 11px 12px; }
+  input[type=text]:focus, select:focus { outline: 2px solid var(--brand); outline-offset: 1px; }
+  .row { display: grid; grid-template-columns: 1fr 200px auto; gap: 12px; align-items: end; }
+  @media (max-width: 640px) { .row { grid-template-columns: 1fr; } }
+
+  .btn { font: inherit; font-weight: 700; border: 0; border-radius: 10px; padding: 11px 18px; cursor: pointer;
+         background: var(--brand); color: var(--brand-ink); white-space: nowrap; }
+  .btn:disabled { opacity: .55; cursor: progress; }
+  .btn.ghost { background: transparent; color: var(--brand); border: 1px solid var(--line); text-decoration: none; }
+
+  .result { margin-top: 18px; border-radius: 12px; padding: 18px; border: 1px solid var(--line); }
+  .result.ok { background: var(--ok-bg); border-color: transparent; }
+  .result.bad { background: var(--bad-bg); border-color: transparent; }
+  .badge { display: flex; align-items: center; gap: 10px; font-size: 24px; font-weight: 800; }
+  .badge .ico { width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center;
+                color: #fff; font-size: 19px; flex: none; }
+  .ok .badge { color: var(--ok); } .ok .ico { background: var(--ok); }
+  .bad .badge { color: var(--bad); } .bad .ico { background: var(--bad); }
+  .reason { margin: 6px 0 0 44px; font-weight: 500; }
+  .chip { display: inline-block; margin: 8px 0 0 44px; padding: 3px 10px; border-radius: 999px; font-size: 12.5px;
+          font-weight: 700; background: var(--warn-bg); color: var(--warn); }
+  dl { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 10px 18px; margin: 16px 0 0; }
+  dl div { background: var(--card); border-radius: 10px; padding: 10px 12px; }
+  dt { font-size: 12px; color: var(--muted); font-weight: 600; }
+  dd { margin: 2px 0 0; font-weight: 600; overflow-wrap: anywhere; }
+
+  .history { margin-top: 18px; }
+  .history h3 { font-size: 13px; color: var(--muted); margin: 0 0 8px; text-transform: uppercase; letter-spacing: .04em; }
+  .history ul { list-style: none; margin: 0; padding: 0; }
+  .history li { display: flex; justify-content: space-between; gap: 12px; padding: 8px 0; border-top: 1px solid var(--line); font-size: 14px; }
+  .history .s-ok { color: var(--ok); font-weight: 700; } .history .s-bad { color: var(--bad); font-weight: 700; }
+
+  .drop { border: 2px dashed var(--line); border-radius: 12px; padding: 28px 16px; text-align: center; cursor: pointer;
+          background: var(--bg); transition: border-color .15s, background .15s; }
+  .drop.over, .drop:focus-visible { border-color: var(--brand); background: var(--brand-soft); outline: none; }
+  .drop strong { display: block; font-size: 16px; }
+  .drop span { color: var(--muted); font-size: 13.5px; }
+  .file-chosen { margin-top: 10px; font-weight: 600; }
+  .opts { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 16px; }
+  @media (max-width: 640px) { .opts { grid-template-columns: 1fr; } }
+  .seg { display: flex; gap: 6px; }
+  .seg label { flex: 1; margin: 0; text-align: center; border: 1px solid var(--line); border-radius: 10px;
+               padding: 10px 8px; cursor: pointer; color: var(--ink); font-size: 14px; background: var(--bg); }
+  .seg input { position: absolute; opacity: 0; pointer-events: none; }
+  .seg input:checked + span { color: var(--brand); }
+  .seg label:has(input:checked) { border-color: var(--brand); background: var(--brand-soft); }
+  .seg input:focus-visible + span { outline: 2px solid var(--brand); outline-offset: 3px; border-radius: 4px; }
+  .actions { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-top: 18px; }
+  .actions a { color: var(--brand); font-size: 14px; }
+
+  .tiles { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 18px; }
+  @media (max-width: 640px) { .tiles { grid-template-columns: repeat(2, 1fr); } }
+  .tile { border-radius: 12px; padding: 14px; background: var(--bg); }
+  .tile b { display: block; font-size: 26px; line-height: 1.1; font-variant-numeric: tabular-nums; }
+  .tile span { font-size: 13px; color: var(--muted); }
+  .tile.ok { background: var(--ok-bg); } .tile.ok b { color: var(--ok); }
+  .tile.bad { background: var(--bad-bg); } .tile.bad b { color: var(--bad); }
+  .tile.warn { background: var(--warn-bg); } .tile.warn b { color: var(--warn); }
+
+  .error { margin-top: 14px; padding: 12px 14px; border-radius: 10px; background: var(--bad-bg); color: var(--bad); font-weight: 600; }
+  .muted { color: var(--muted); font-size: 13px; }
+  footer { margin-top: 28px; color: var(--muted); font-size: 13px; }
+  [hidden] { display: none !important; }
+  .spinner { width: 16px; height: 16px; border: 2px solid currentColor; border-right-color: transparent; border-radius: 50%;
+             display: inline-block; vertical-align: -3px; margin-right: 8px; animation: spin .8s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Champ Phone Validator</h1>
+    <p>Check one phone number, or upload a list and get a PDF or Word report back.</p>
+  </header>
+
+  <div class="tabs" role="tablist">
+    <button class="tab" role="tab" id="tab-single" aria-controls="panel-single" aria-selected="true">Check one number</button>
+    <button class="tab" role="tab" id="tab-bulk" aria-controls="panel-bulk" aria-selected="false">Upload a file</button>
+  </div>
+
+  <!-- single number -->
+  <section id="panel-single" role="tabpanel" aria-labelledby="tab-single">
+    <div class="card">
+      <h2>Check one number</h2>
+      <p class="hint">Type it any way you have it: +91 98450 12345, 09845012345, 98450-12345 all work.</p>
+      <form id="single-form" class="row" autocomplete="off">
+        <div>
+          <label for="number">Phone number</label>
+          <input type="text" id="number" name="number" placeholder="+91 98450 12345" inputmode="tel" required maxlength="64">
+        </div>
+        <div>
+          <label for="country">Country if no + code</label>
+          <select id="country" name="country"></select>
+        </div>
+        <button class="btn" type="submit" id="single-btn">Check</button>
+      </form>
+
+      <div id="single-error" class="error" hidden></div>
+      <div id="single-result" class="result" hidden aria-live="polite">
+        <div class="badge"><span class="ico" id="r-ico"></span><span id="r-status"></span></div>
+        <p class="reason" id="r-reason"></p>
+        <span class="chip" id="r-chip" hidden>Needs a live carrier check</span>
+        <dl id="r-details"></dl>
+      </div>
+
+      <div class="history" id="history" hidden>
+        <h3>Checked this session</h3>
+        <ul id="history-list"></ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- bulk upload -->
+  <section id="panel-bulk" role="tabpanel" aria-labelledby="tab-bulk" hidden>
+    <div class="card">
+      <h2>Upload a list of numbers</h2>
+      <p class="hint">CSV, Excel (.xlsx) or a text file with one number per line. Name the column <b>phone</b> or <b>mobile</b>; a <b>country</b> column is used if present. Up to 50,000 rows.</p>
+
+      <div class="drop" id="drop" tabindex="0" role="button" aria-label="Choose a file to upload">
+        <strong>Drop a file here, or click to choose</strong>
+        <span>.csv &middot; .xlsx &middot; .txt &middot; up to 10 MB</span>
+        <div class="file-chosen" id="file-chosen" hidden></div>
+      </div>
+      <input type="file" id="file" accept=".csv,.xlsx,.txt" hidden>
+
+      <div class="opts">
+        <div>
+          <label for="bulk-country">Country for numbers without a + code</label>
+          <select id="bulk-country"></select>
+        </div>
+        <div>
+          <label id="fmt-label">Report format</label>
+          <div class="seg" role="radiogroup" aria-labelledby="fmt-label">
+            <label><input type="radio" name="fmt" value="pdf" checked><span>PDF</span></label>
+            <label><input type="radio" name="fmt" value="docx"><span>Word</span></label>
+            <label><input type="radio" name="fmt" value="csv"><span>CSV</span></label>
+          </div>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="btn" id="bulk-btn" disabled>Validate and download report</button>
+        <a href="/api/sample" download>No file handy? Get a sample file</a>
+      </div>
+
+      <div id="bulk-error" class="error" hidden></div>
+
+      <div id="bulk-result" hidden aria-live="polite">
+        <div class="tiles">
+          <div class="tile"><b id="t-total">0</b><span>Total numbers</span></div>
+          <div class="tile ok"><b id="t-ok">0</b><span>Validated</span></div>
+          <div class="tile bad"><b id="t-bad">0</b><span>Not Validated</span></div>
+          <div class="tile warn"><b id="t-warn">0</b><span>of which need a live check</span></div>
+        </div>
+        <p class="muted" id="bulk-meta"></p>
+        <div class="actions"><a id="dl-again" class="btn ghost" href="#">Download the report again</a></div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    "Validated" means a correctly formed mobile number for its country, checked offline against the national numbering plan.
+    It does not prove the SIM is active today; numbers marked "needs a live carrier check" are the ones a paid lookup would settle.
+    Files are processed in memory on this machine and are not stored.
+  </footer>
+</div>
+
+<script>
+const COUNTRIES = [
+  ["IN", "India"], ["US", "United States"], ["GB", "United Kingdom"], ["AE", "United Arab Emirates"],
+  ["CA", "Canada"], ["AU", "Australia"], ["SG", "Singapore"], ["SA", "Saudi Arabia"], ["QA", "Qatar"],
+  ["DE", "Germany"], ["FR", "France"], ["NL", "Netherlands"], ["IE", "Ireland"], ["NZ", "New Zealand"],
+  ["ZA", "South Africa"], ["MY", "Malaysia"], ["PH", "Philippines"], ["BD", "Bangladesh"], ["LK", "Sri Lanka"], ["NP", "Nepal"],
+];
+for (const id of ["country", "bulk-country"]) {
+  const sel = document.getElementById(id);
+  for (const [code, name] of COUNTRIES) sel.add(new Option(`${name} (${code})`, code));
+}
+
+// ---------- tabs
+const tabs = [["tab-single", "panel-single"], ["tab-bulk", "panel-bulk"]];
+for (const [t, p] of tabs) {
+  document.getElementById(t).addEventListener("click", () => {
+    for (const [t2, p2] of tabs) {
+      document.getElementById(t2).setAttribute("aria-selected", String(t2 === t));
+      document.getElementById(p2).hidden = p2 !== p;
+    }
+  });
+}
+
+function errorText(body, fallback) {
+  if (!body) return fallback;
+  if (typeof body.error === "string") return body.error;
+  if (Array.isArray(body.detail)) return body.detail.map(d => d.msg).join("; ");
+  if (typeof body.detail === "string") return body.detail;
+  return fallback;
+}
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+
+// ---------- single number
+const form = document.getElementById("single-form");
+const singleBtn = document.getElementById("single-btn");
+const history = [];
+
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const number = document.getElementById("number").value.trim();
+  const country = document.getElementById("country").value;
+  const err = document.getElementById("single-error");
+  err.hidden = true;
+  if (!number) return;
+  singleBtn.disabled = true;
+  try {
+    const res = await fetch("/api/check", {
+      method: "POST", headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({number, country}),
+    });
+    const body = await res.json().catch(() => null);
+    if (!res.ok) throw new Error(errorText(body, `Request failed (${res.status})`));
+    showSingle(body);
+    history.unshift(body);
+    renderHistory();
+  } catch (ex) {
+    err.textContent = ex.message; err.hidden = false;
+    document.getElementById("single-result").hidden = true;
+  } finally {
+    singleBtn.disabled = false;
+  }
+});
+
+function showSingle(r) {
+  const box = document.getElementById("single-result");
+  box.className = "result " + (r.validated ? "ok" : "bad");
+  document.getElementById("r-ico").textContent = r.validated ? "✓" : "✕";
+  document.getElementById("r-status").textContent = r.status;
+  document.getElementById("r-reason").textContent = r.reason_text;
+  document.getElementById("r-chip").hidden = !r.needs_review;
+  const rows = [
+    ["Number", r.international || "—"],
+    ["E.164", r.e164 || "—"],
+    ["Line type", (r.line_type || "—").replace(/_/g, " ")],
+    ["Country", r.country || "—"],
+    ["Carrier (original)", r.carrier || "—"],
+    ["Region", r.region_hint || "—"],
+  ];
+  if (r.extension) rows.push(["Extension", r.extension]);
+  document.getElementById("r-details").innerHTML =
+    rows.map(([k, v]) => `<div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join("");
+  box.hidden = false;
+}
+
+function renderHistory() {
+  const list = document.getElementById("history-list");
+  list.innerHTML = history.slice(0, 8).map(r =>
+    `<li><span>${esc(r.input)}</span><span class="${r.validated ? "s-ok" : "s-bad"}">${esc(r.status)}</span></li>`
+  ).join("");
+  document.getElementById("history").hidden = history.length < 2;
+}
+
+// ---------- bulk upload
+const drop = document.getElementById("drop");
+const fileInput = document.getElementById("file");
+const bulkBtn = document.getElementById("bulk-btn");
+let chosen = null, lastUrl = null;
+
+function choose(f) {
+  if (!f) return;
+  chosen = f;
+  const el = document.getElementById("file-chosen");
+  el.textContent = `${f.name} · ${(f.size / 1024).toFixed(1)} KB`;
+  el.hidden = false;
+  bulkBtn.disabled = false;
+  document.getElementById("bulk-error").hidden = true;
+}
+drop.addEventListener("click", () => fileInput.click());
+drop.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); fileInput.click(); } });
+fileInput.addEventListener("change", () => choose(fileInput.files[0]));
+for (const ev of ["dragenter", "dragover"]) drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.add("over"); });
+for (const ev of ["dragleave", "drop"]) drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.remove("over"); });
+drop.addEventListener("drop", e => choose(e.dataTransfer.files[0]));
+
+function filenameFrom(res, fallback) {
+  const cd = res.headers.get("Content-Disposition") || "";
+  const m = cd.match(/filename="([^"]+)"/);
+  return m ? m[1] : fallback;
+}
+
+bulkBtn.addEventListener("click", async () => {
+  if (!chosen) return;
+  const fmt = document.querySelector('input[name="fmt"]:checked').value;
+  const err = document.getElementById("bulk-error");
+  err.hidden = true;
+  const label = bulkBtn.textContent;
+  bulkBtn.disabled = true;
+  bulkBtn.innerHTML = '<span class="spinner"></span>Validating…';
+  try {
+    const fd = new FormData();
+    fd.append("file", chosen);
+    fd.append("format", fmt);
+    fd.append("country", document.getElementById("bulk-country").value);
+    const res = await fetch("/api/bulk", {method: "POST", body: fd});
+    if (!res.ok) {
+      const body = await res.json().catch(() => null);
+      throw new Error(errorText(body, `Upload failed (${res.status})`));
+    }
+    const summary = JSON.parse(res.headers.get("X-Validation-Summary") || "{}");
+    const blob = await res.blob();
+    if (lastUrl) URL.revokeObjectURL(lastUrl);
+    lastUrl = URL.createObjectURL(blob);
+    const name = filenameFrom(res, `validation_report.${fmt}`);
+    const a = document.getElementById("dl-again");
+    a.href = lastUrl; a.download = name;
+    a.click();
+    const n = v => Number(v || 0).toLocaleString();
+    document.getElementById("t-total").textContent = n(summary.total);
+    document.getElementById("t-ok").textContent = n(summary.validated);
+    document.getElementById("t-bad").textContent = n(summary.not_validated);
+    document.getElementById("t-warn").textContent = n(summary.needs_review);
+    document.getElementById("bulk-meta").textContent =
+      `Report: ${name}. Phone column: "${summary.phone_column}"` +
+      (summary.country_column ? `, country column: "${summary.country_column}"` : `, no country column (used ${summary.default_country})`) +
+      `. ${n(summary.duplicates)} duplicate${summary.duplicates === 1 ? "" : "s"} found.`;
+    document.getElementById("bulk-result").hidden = false;
+  } catch (ex) {
+    err.textContent = ex.message; err.hidden = false;
+  } finally {
+    bulkBtn.disabled = false;
+    bulkBtn.textContent = label;
+  }
+});
+</script>
+</body>
+</html>
