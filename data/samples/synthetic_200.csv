@@ -1,0 +1,201 @@
+id,name,phone,country,expected_verdict,note
+C0001,Aarav Al Maktoum,+91 91776 08527,In,keep,in_mobile_plus
+C0002,Sneha Das,+919000669172,IND,keep,in_mobile_plus_nospace
+C0003,Sneha Sharma,07000000135,IND,keep,in_mobile_zero
+C0004,Diya Iyer,918800659802,India,keep,in_mobile_91
+C0005,Priya Brown,7001094897,IND,keep,in_mobile_bare
+C0006,Kiran Iyer,98991-47603,india,keep,in_mobile_dash
+C0007,Diya Smith,+91-90367-40515,India,keep,in_mobile_dashes_cc
+C0008,Aarav Wilson,(+91) 90527 82148,IN,keep,in_mobile_parens
+C0009,Kiran Iyer,630 211 1032,india,keep,in_mobile_spaces
+C0010,Priya Gupta,74000.90096,india,keep,in_mobile_dotted
+C0011,Priya Al Maktoum,+91 70006 72044,In,keep,in_mobile_plus
+C0012,Aarav Nair,+919999685839,IND,keep,in_mobile_plus_nospace
+C0013,Vikram Sharma,08100701883,india,keep,in_mobile_zero
+C0014,Sneha Taylor,919833552683,India,keep,in_mobile_91
+C0015,Meera Reddy,9000743591,india,keep,in_mobile_bare
+C0016,Vikram Patel,98679-65054,In,keep,in_mobile_dash
+C0017,Rohan Gupta,+91-91007-55590,In,keep,in_mobile_dashes_cc
+C0018,Diya Sharma,(+91) 98202 27402,india,keep,in_mobile_parens
+C0019,Meera Khan,740 022 8545,In,keep,in_mobile_spaces
+C0020,Ava Wilson,63018.70984,IN,keep,in_mobile_dotted
+C0021,Olivia Mehta,+91 81003 24867,IN,keep,in_mobile_plus
+C0022,Emma Rao,+918888533825,IND,keep,in_mobile_plus_nospace
+C0023,Sneha Smith,09811408688,India,keep,in_mobile_zero
+C0024,Noah Patel,919811383896,india,keep,in_mobile_91
+C0025,John Nair,7400920336,india,keep,in_mobile_bare
+C0026,Arjun Wilson,90000-49681,IN,keep,in_mobile_dash
+C0027,Aarav Khan,+91-63028-30639,india,keep,in_mobile_dashes_cc
+C0028,Diya Patel,(+91) 90362 88395,IN,keep,in_mobile_parens
+C0029,Priya Haddad,850 011 5606,IN,keep,in_mobile_spaces
+C0030,John Al Maktoum,88885.81925,In,keep,in_mobile_dotted
+C0031,John Taylor,+91 63022 70709,india,keep,in_mobile_plus
+C0032,Diya Al Maktoum,+919900268906,India,keep,in_mobile_plus_nospace
+C0033,Ananya Mehta,06300952185,IN,keep,in_mobile_zero
+C0034,Liam Patel,919030648962,India,keep,in_mobile_91
+C0035,Priya Sharma,9036132360,India,keep,in_mobile_bare
+C0036,Meera Iyer,80009-20645,IN,keep,in_mobile_dash
+C0037,Ava Nair,+91-98674-30993,In,keep,in_mobile_dashes_cc
+C0038,Sneha Sharma,(+91) 98674 46886,India,keep,in_mobile_parens
+C0039,Sneha Khan,740 045 2314,IN,keep,in_mobile_spaces
+C0040,Layla Taylor,75002.45338,IND,keep,in_mobile_dotted
+C0041,Olivia Taylor,+91 98115 88615,India,keep,in_mobile_plus
+C0042,Liam Wilson,+917400246187,India,keep,in_mobile_plus_nospace
+C0043,Kiran Smith,08888077009,IND,keep,in_mobile_zero
+C0044,Sneha Iyer,919030565561,IND,keep,in_mobile_91
+C0045,Kiran Reddy,9036800500,india,keep,in_mobile_bare
+C0046,Ananya Patel,81002-76920,IND,keep,in_mobile_dash
+C0047,Omar Mehta,+91-81009-14467,IN,keep,in_mobile_dashes_cc
+C0048,Yusuf Sharma,(+91) 63019 49869,In,keep,in_mobile_parens
+C0049,Vikram Sharma,720 014 6039,India,keep,in_mobile_spaces
+C0050,Yusuf Rao,91001.29554,IND,keep,in_mobile_dotted
+C0051,Omar Iyer,+91 88003 56047,india,keep,in_mobile_plus
+C0052,Vikram Patel,+919870836675,IN,keep,in_mobile_plus_nospace
+C0053,John Rao,06300227151,In,keep,in_mobile_zero
+C0054,Liam Nair,919867528733,In,keep,in_mobile_91
+C0055,Rohan Patel,8800434698,india,keep,in_mobile_bare
+C0056,John Reddy,90081-70846,india,keep,in_mobile_dash
+C0057,John Al Maktoum,+91-90521-70984,In,keep,in_mobile_dashes_cc
+C0058,John Smith,(+91) 98864 06416,IND,keep,in_mobile_parens
+C0059,Vikram Sharma,850 015 4770,IND,keep,in_mobile_spaces
+C0060,Layla Sharma,98118.66564,IN,keep,in_mobile_dotted
+C0061,Fatima Patel,+91 98991 31066,In,keep,in_mobile_plus
+C0062,Yusuf Rao,+919000993511,India,keep,in_mobile_plus_nospace
+C0063,Liam Wilson,09892980707,In,keep,in_mobile_zero
+C0064,Kiran Taylor,919036106623,IND,keep,in_mobile_91
+C0065,Yusuf Das,9899452941,india,keep,in_mobile_bare
+C0066,Arjun Wilson,98998-02319,IND,keep,in_mobile_dash
+C0067,Layla Al Maktoum,+91-70001-47457,india,keep,in_mobile_dashes_cc
+C0068,Noah Gupta,(+91) 80008 69103,india,keep,in_mobile_parens
+C0069,Rohan Das,630 237 6820,IN,keep,in_mobile_spaces
+C0070,Rohan Haddad,97416.68214,India,keep,in_mobile_dotted
+C0071,Liam Nair,+91 98867 07766,IN,keep,in_mobile_plus
+C0072,Priya Nair,+919036493575,IND,keep,in_mobile_plus_nospace
+C0073,Ananya Smith,09008819081,India,keep,in_mobile_zero
+C0074,Diya Reddy,919177237942,India,keep,in_mobile_91
+C0075,Vikram Smith,9811468561,IND,keep,in_mobile_bare
+C0076,Sneha Nair,99006-41219,India,keep,in_mobile_dash
+C0077,Ananya Mehta,+91-63001-95779,In,keep,in_mobile_dashes_cc
+C0078,Noah Rao,(+91) 81003 86930,IND,keep,in_mobile_parens
+C0079,Ava Patel,986 726 2638,In,keep,in_mobile_spaces
+C0080,Kiran Patel,90002.32019,India,keep,in_mobile_dotted
+C0081,Omar Mehta,022 3756 8415,India,drop,in_landline
+C0082,Meera Sharma,04021381754,India,drop,in_landline
+C0083,Liam Das,04038776434,India,drop,in_landline
+C0084,Omar Brown,+91 4441113160,India,drop,in_landline
+C0085,Meera Smith,033 2342 6064,India,drop,in_landline
+C0086,Arjun Rao,04443870415,India,drop,in_landline
+C0087,Vikram Brown,04423046859,India,drop,in_landline
+C0088,Arjun Wilson,04021479565,India,drop,in_landline
+C0089,Ananya Al Maktoum,+91 8040304366,India,drop,in_landline
+C0090,Priya Iyer,04424402902,India,drop,in_landline
+C0091,Rohan Rao,08036212986,India,drop,in_landline
+C0092,Aarav Reddy,022 2112 3488,India,drop,in_landline
+C0093,Noah Das,+91 2230803621,India,drop,in_landline
+C0094,Arjun Khan,02233532189,India,drop,in_landline
+C0095,Omar Haddad,04432456679,India,drop,in_landline
+C0096,Meera Sharma,+1 312 555 0164,US,review,us_fixed_or_mobile
+C0097,Ava Patel,+1 305 555 0195,US,review,us_fixed_or_mobile
+C0098,Layla Sharma,+1 305 555 0123,United States,review,us_fixed_or_mobile
+C0099,Ava Gupta,+1 206 555 0119,United States,review,us_fixed_or_mobile
+C0100,Noah Haddad,+1 305 555 0156,United States,review,us_fixed_or_mobile
+C0101,John Rao,+1 415 555 0110,USA,review,us_fixed_or_mobile
+C0102,Priya Das,+1 312 555 0145,USA,review,us_fixed_or_mobile
+C0103,Vikram Khan,+1 702 555 0127,United States,review,us_fixed_or_mobile
+C0104,Aarav Mehta,+1 312 555 0129,US,review,us_fixed_or_mobile
+C0105,Liam Nair,+1 702 555 0101,United States,review,us_fixed_or_mobile
+C0106,Yusuf Sharma,+44 7500 807962,GB,keep,uk_mobile
+C0107,Fatima Rao,+44 7931 407463,GB,keep,uk_mobile
+C0108,Yusuf Khan,+44 7400 027162,United Kingdom,keep,uk_mobile
+C0109,Noah Sharma,+44 7500 304796,UK,keep,uk_mobile
+C0110,Liam Smith,+44 7400 614178,UK,keep,uk_mobile
+C0111,Yusuf Brown,+44 7931 223840,UK,keep,uk_mobile
+C0112,Rohan Mehta,+44 20 3456 1498,UK,drop,uk_landline
+C0113,Rohan Rao,+44 20 7946 8927,UK,drop,uk_landline
+C0114,Vikram Das,+44 20 3456 9242,UK,drop,uk_landline
+C0115,Omar Khan,+44 20 8765 2938,UK,drop,uk_landline
+C0116,Rohan Haddad,+44 56 3533 8778,UK,review,uk_voip
+C0117,Emma Iyer,+44 56 4350 2079,UK,review,uk_voip
+C0118,Priya Wilson,+44 56 9807 7932,UK,review,uk_voip
+C0119,Vikram Khan,+44 56 3139 6215,UK,review,uk_voip
+C0120,Emma Haddad,+971 50 498 7921,UAE,keep,ae_mobile
+C0121,Omar Haddad,+971 58 048 4283,United Arab Emirates,keep,ae_mobile
+C0122,Liam Al Maktoum,+971 50 877 4219,AE,keep,ae_mobile
+C0123,Yusuf Smith,+971 58 128 4014,UAE,keep,ae_mobile
+C0124,Yusuf Patel,+971 58 084 5487,AE,keep,ae_mobile
+C0125,Kiran Mehta,+971 50 448 3194,UAE,keep,ae_mobile
+C0126,Liam Brown,+1 800 555 0135,US,drop,us_toll_free
+C0127,Rohan Patel,+1 800 555 0127,US,drop,us_toll_free
+C0128,Diya Gupta,+1 800 555 0107,US,drop,us_toll_free
+C0129,Vikram Smith,1800 239 1038,India,drop,in_toll_free
+C0130,Vikram Sharma,1800 905 3087,India,drop,in_toll_free
+C0131,Ava Reddy,+44 7931 681692,India,review,uk_mobile_in_india_column
+C0132,Priya Gupta,+44 7800 230320,India,review,uk_mobile_in_india_column
+C0133,Ava Sharma,+44 7411 103244,India,review,uk_mobile_in_india_column
+C0134,Sneha Rao,+44 7411 040136,India,review,uk_mobile_in_india_column
+C0135,Vikram Wilson,+91 98676 97475,USA,review,in_mobile_in_usa_column
+C0136,John Rao,+91 91776 83929,USA,review,in_mobile_in_usa_column
+C0137,Layla Taylor,+91 98927 62381,USA,review,in_mobile_in_usa_column
+C0138,Layla Gupta,+971549325657,IN,review,ae_mobile_in_india_column
+C0139,Rohan Nair,+971553134913,IN,review,ae_mobile_in_india_column
+C0140,John Nair,+971562989139,IN,review,ae_mobile_in_india_column
+C0141,Aarav Taylor,,India,drop,blank
+C0142,Emma Smith,   ,India,drop,blank_spaces
+C0143,Omar Sharma,N/A,India,drop,na_text
+C0144,Omar Smith,call me,India,drop,words
+C0145,Aarav Patel,12345,India,drop,too_short
+C0146,Arjun Wilson,98450,India,drop,too_short_5
+C0147,Arjun Khan,984501234,India,drop,nine_digits
+C0148,John Mehta,98450123456,India,drop,eleven_digits
+C0149,Vikram Gupta,+91 98450 123456,India,drop,eleven_digits_cc
+C0150,Aarav Reddy,+91 12345 67890,India,drop,in_landline_range_typed_as_mobile
+C0151,Kiran Brown,+91 5845012345,India,drop,unallocated_5_prefix
+C0152,Vikram Reddy,+91 4845012345,India,drop,unallocated_4_prefix
+C0153,Meera Mehta,0000000000,India,drop,all_zeros
+C0154,Ananya Reddy,9999999999,India,keep,repeated_9s_is_a_valid_delhi_range
+C0155,Layla Haddad,+91 98450 1234O,India,drop,letter_O_for_zero
+C0156,Priya Haddad,+9198450123,India,drop,cc_then_short
+C0157,Vikram Haddad,++91 9886011223,India,keep,double_plus_tolerated_by_parser
+C0158,Layla Patel,+91 (0) 97410 55667,India,keep,zero_in_parens_after_cc
+C0159,Layla Khan,+91 99000 77889 x123,India,review,mobile_with_extension
+C0160,Priya Khan,080 2345 6789 ext 45,India,drop,landline_with_extension
+C0161,Sneha Gupta,+1 212 555 0100 x9,US,review,us_with_extension
+C0162,Ananya Iyer,+999 1234567,India,drop,invalid_country_code
+C0163,John Haddad,+91 98800 33445 ,India,keep,trailing_nbsp
+C0164,Ava Brown,‐90080–66778’,India,keep,unicode_quotes_and_dash
+C0165,Priya Mehta,tel:+91-98100-99887,India,keep,tel_uri_prefix
+C0166,Layla Das,9.19845E+11,India,drop,excel_sci_6_sig_digits_lost
+C0167,Omar Khan,9.18E+11,India,drop,excel_sci_3_sig_digits_lost
+C0168,Vikram Haddad,9.19886022334E+11,India,keep,excel_sci_full_precision_recovered
+C0169,Emma Smith,"9,19972033445E+11",India,keep,excel_sci_comma_decimal_recovered
+C0170,Emma Brown,919845012346.0,India,keep,excel_trailing_dot_zero
+C0171,Omar Brown,9845012347.00,India,keep,excel_trailing_dot_zero_zero_national
+C0172,Rohan Reddy,4.47400123456E+11,UK,keep,excel_sci_uk_recovered
+C0173,Arjun Nair,1.2125550123E+10,US,review,excel_sci_us_recovered_fixed_or_mobile
+C0174,Liam Reddy,9.8450123E+9,India,drop,excel_sci_national_lost_digits
+C0175,John Das,98450123450000,India,drop,excel_expanded_too_long
+C0176,Yusuf Rao,+91 98107 74830,India,keep,dupe_set_0_original
+C0177,Diya Al Maktoum,+91 75007 03659,India,keep,dupe_set_1_original
+C0178,Aarav Gupta,+91 98113 96539,India,keep,dupe_set_2_original
+C0179,Liam Patel,+91 98995 19424,India,keep,dupe_set_3_original
+C0180,Meera Khan,+91 99997 38934,India,keep,dupe_set_4_original
+C0181,Aarav Khan,09810774830,India,drop,dupe_set_0_zero
+C0182,Priya Mehta,919810774830,India,drop,dupe_set_0_91
+C0183,Aarav Brown,9810774830,India,drop,dupe_set_0_bare
+C0184,Emma Patel,98107-74830,India,drop,dupe_set_0_dash
+C0185,Emma Smith,07500703659,India,drop,dupe_set_1_zero
+C0186,Ava Das,917500703659,India,drop,dupe_set_1_91
+C0187,Ananya Mehta,7500703659,India,drop,dupe_set_1_bare
+C0188,Noah Brown,75007-03659,India,drop,dupe_set_1_dash
+C0189,Omar Patel,09811396539,India,drop,dupe_set_2_zero
+C0190,Fatima Brown,919811396539,India,drop,dupe_set_2_91
+C0191,Ananya Khan,9811396539,India,drop,dupe_set_2_bare
+C0192,John Mehta,98113-96539,India,drop,dupe_set_2_dash
+C0193,Vikram Taylor,09899519424,India,drop,dupe_set_3_zero
+C0194,Aarav Rao,919899519424,India,drop,dupe_set_3_91
+C0195,Diya Reddy,9899519424,India,drop,dupe_set_3_bare
+C0196,Liam Khan,98995-19424,India,drop,dupe_set_3_dash
+C0197,Rohan Smith,09999738934,India,drop,dupe_set_4_zero
+C0198,Liam Al Maktoum,919999738934,India,drop,dupe_set_4_91
+C0199,Emma Al Maktoum,9999738934,India,drop,dupe_set_4_bare
+C0200,Diya Wilson,99997-38934,India,drop,dupe_set_4_dash

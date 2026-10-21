@@ -1,0 +1,17 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+
+# Validator outputs and caches (never commit real phone data)
+data/output/
+data/real/
+*.sqlite
+*.db
+
+# Editors / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
